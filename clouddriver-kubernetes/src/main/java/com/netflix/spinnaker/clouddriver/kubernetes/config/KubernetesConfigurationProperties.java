@@ -28,6 +28,9 @@ public class KubernetesConfigurationProperties {
   private static final int DEFAULT_CACHE_THREADS = 1;
   private List<ManagedAccount> accounts = new ArrayList<>();
 
+  /** flag to toggle account health check. Defaults to true. */
+  private boolean verifyAccountHealth = true;
+
   @Data
   public static class ManagedAccount implements CredentialsDefinition {
     private String name;
