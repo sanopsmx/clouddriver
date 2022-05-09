@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -39,8 +40,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
 
-public abstract class AbstractBootstrapCredentialsConfigurationProvider<T>
-    implements ConfigurationProvider<T> {
+/**
+ * For larger number of Kubernetes accounts, as-is SpringBoot implementation of properties binding
+ * is inefficient, hence a custom logic for KubernetesConfigurationProperties is written but it
+ * still uses SpringBoot's Binder class. BootstrapKubernetesConfigurationProvider class fetches the
+ * flattened kubernetes properties from Spring Cloud Config's BootstrapPropertySource and creates a
+ * KubernetesConfigurationProperties object.
+ */
+@Slf4j
+public class BootstrapKubernetesConfigurationProvider {
   private final ConfigurableApplicationContext applicationContext;
   private CloudConfigResourceService configResourceService;
   private SecretSession secretSession;
@@ -56,7 +64,10 @@ public abstract class AbstractBootstrapCredentialsConfigurationProvider<T>
     this.secretSession = new SecretSession(secretManager);
   }
 
-  public abstract T getConfigurationProperties();
+  public KubernetesConfigurationProperties getKubernetesConfigurationProperties() {
+    log.info("* Started loading Kubernetes accounts *");
+    return getKubernetesConfigurationProperties(getPropertiesMap());
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -80,8 +91,8 @@ public abstract class AbstractBootstrapCredentialsConfigurationProvider<T>
         }
       }
     }
-
-    throw new RuntimeException("No BootstrapPropertySource found!");
+    log.info("* Completed binding {} Kubernetes accounts *", k8sConfigProps.getAccounts().size());
+    return k8sConfigProps;
   }
 
   @Override
