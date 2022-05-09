@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -48,6 +49,7 @@ import org.springframework.core.env.PropertySource;
  * flattened kubernetes properties from Spring Cloud Config's BootstrapPropertySource and creates a
  * KubernetesConfigurationProperties object.
  */
+@Slf4j
 public class BootstrapKubernetesConfigurationProvider {
   private final ConfigurableApplicationContext applicationContext;
   private CloudConfigResourceService configResourceService;
@@ -66,6 +68,7 @@ public class BootstrapKubernetesConfigurationProvider {
   }
 
   public KubernetesConfigurationProperties getKubernetesConfigurationProperties() {
+    log.info("* Started loading Kubernetes accounts *");
     return getKubernetesConfigurationProperties(getPropertiesMap());
   }
 
@@ -89,7 +92,7 @@ public class BootstrapKubernetesConfigurationProvider {
           .getAccounts()
           .add((KubernetesConfigurationProperties.ManagedAccount) result.get());
     }
-
+    log.info("* Completed binding {} Kubernetes accounts *", k8sConfigProps.getAccounts().size());
     return k8sConfigProps;
   }
 
