@@ -620,26 +620,27 @@ public class KubernetesCredentials {
 
   private <T> T runAndRecordMetrics(
       String action, List<KubernetesKind> kinds, String namespace, Supplier<T> op) {
-    Map<String, String> tags = new HashMap<>();
-    tags.put("action", action);
-    tags.put(
-        "kinds",
-        kinds.stream().map(KubernetesKind::toString).sorted().collect(Collectors.joining(",")));
-    tags.put("account", accountName);
-    tags.put("namespace", Strings.isNullOrEmpty(namespace) ? "none" : namespace);
-    tags.put("success", "true");
-    long startTime = clock.monotonicTime();
-    try {
-      return op.get();
-    } catch (RuntimeException e) {
-      tags.put("success", "false");
-      tags.put("reason", e.getClass().getSimpleName());
-      throw e;
-    } finally {
-      registry
-          .timer(registry.createId("kubernetes.api", tags))
-          .record(clock.monotonicTime() - startTime, TimeUnit.NANOSECONDS);
-    }
+    return op.get();
+//    Map<String, String> tags = new HashMap<>();
+//    tags.put("action", action);
+//    tags.put(
+//        "kinds",
+//        kinds.stream().map(KubernetesKind::toString).sorted().collect(Collectors.joining(",")));
+//    tags.put("account", accountName);
+//    tags.put("namespace", Strings.isNullOrEmpty(namespace) ? "none" : namespace);
+//    tags.put("success", "true");
+//    long startTime = clock.monotonicTime();
+//    try {
+//      return op.get();
+//    } catch (RuntimeException e) {
+//      tags.put("success", "false");
+//      tags.put("reason", e.getClass().getSimpleName());
+//      throw e;
+//    } finally {
+//      registry
+//          .timer(registry.createId("kubernetes.api", tags))
+//          .record(clock.monotonicTime() - startTime, TimeUnit.NANOSECONDS);
+//    }
   }
 
   /**
