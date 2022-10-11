@@ -42,6 +42,8 @@ RUN adduser spinnaker
 
 RUN mkdir -p /opt/clouddriver/plugins
 
+RUN chown -R spinnaker:spinnaker /opt/
+
 USER spinnaker
 
-CMD  sleep 60s ; "/opt/clouddriver/bin/clouddriver"
+CMD  sleep 180s ; "/opt/clouddriver/bin/clouddriver"
