@@ -170,7 +170,7 @@ class DockerRegistryClient {
     this.registryService = new RestAdapter.Builder()
       .setEndpoint(address)
       .setClient(okClientProvider.provide(address, clientTimeoutMillis, insecureRegistry))
-      .setLogLevel(RestAdapter.LogLevel.NONE)
+      .setLogLevel(RestAdapter.LogLevel.FULL)
       .build()
       .create(DockerRegistryService)
     this.converter = new GsonConverter(new GsonBuilder().create())
