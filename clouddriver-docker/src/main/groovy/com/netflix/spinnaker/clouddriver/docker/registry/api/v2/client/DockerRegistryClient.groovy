@@ -426,6 +426,7 @@ class DockerRegistryClient {
         registryService.getTags(repository, token, userAgent)
     }, repository)
 
+    log.info(response.dump())
     def nextPath = findNextLink(response?.headers)
     def tags = (DockerRegistryTags) converter.fromBody(response.body, DockerRegistryTags)
 
@@ -483,12 +484,15 @@ class DockerRegistryClient {
       Response response
       try {
         if (token) {
+          log.info("with token ...")
           response = withToken(token)
         } else {
+          log.info("without token...")
           response = withoutToken()
         }
       } catch (RetrofitError error) {
         def status = error.response?.status
+        log.info "Status : $status"
         // note, this is a workaround for registries that should be returning
         // 401 when a token expires
         if ([400, 401].contains(status)) {
