@@ -99,6 +99,7 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
       } catch (Exception e) {
         if (e instanceof RetrofitError && e.response?.status == 404) {
           log.warn("Could not load tags for ${repository} in ${credentials.client.address}, reason: ${e.message}")
+          e.printStackTrace()
         } else {
           log.error("Could not load tags for ${repository} in ${credentials.client.address}", e)
         }
