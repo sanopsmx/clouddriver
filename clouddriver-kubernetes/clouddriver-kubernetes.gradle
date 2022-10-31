@@ -85,8 +85,8 @@ dependencies {
   implementation "org.springframework.boot:spring-boot-starter-web"
   implementation "org.springframework.security:spring-security-config"
   implementation "org.springframework.cloud:spring-cloud-context"
-  implementation "org.springframework.cloud:spring-cloud-config-server"
   implementation "io.github.resilience4j:resilience4j-retry"
+  implementation "org.springframework.cloud:spring-cloud-config-server:2.2.8.RELEASE"
 
   testImplementation "org.assertj:assertj-core"
   testImplementation "org.junit.jupiter:junit-jupiter-api"
