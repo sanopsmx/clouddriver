@@ -21,24 +21,16 @@ import com.amazonaws.services.ec2.AmazonEC2
 import com.amazonaws.services.ec2.model.DescribeAccountAttributesResult
 import com.netflix.spectator.api.NoopRegistry
 import com.netflix.spectator.api.Registry
-import com.netflix.spinnaker.clouddriver.aws.AwsConfigurationProperties
 import com.netflix.spinnaker.clouddriver.aws.TestCredential
 import com.netflix.spinnaker.clouddriver.aws.security.AmazonClientProvider
 import com.netflix.spinnaker.credentials.CredentialsRepository
 import org.springframework.boot.actuate.health.Status
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class AmazonHealthIndicatorSpec extends Specification {
 
-  private static final Registry REGISTRY = new NoopRegistry()
-  AwsConfigurationProperties awsConfigurationProperties
+  private static final Registry REGISTRY = new NoopRegistry();
 
-  void setup(){
-    awsConfigurationProperties = new AwsConfigurationProperties()
-  }
-
-  @Unroll
   def "health details contains warning when amazon appears unreachable"() {
     setup:
     def creds = [TestCredential.named('foo')]
@@ -52,13 +44,7 @@ class AmazonHealthIndicatorSpec extends Specification {
       getAmazonEC2(*_) >> mockEc2
     }
 
-    awsConfigurationProperties.health.setVerifyAccountHealth(verifyAccountHealth)
-
-    def indicator = new AmazonHealthIndicator(
-      REGISTRY,
-      credentialsRepository,
-      mockAmazonClientProvider,
-      awsConfigurationProperties)
+    def indicator = new AmazonHealthIndicator(REGISTRY, credentialsRepository, mockAmazonClientProvider)
 
     when:
     indicator.checkHealth()
@@ -66,16 +52,7 @@ class AmazonHealthIndicatorSpec extends Specification {
 
     then:
     health.status == Status.UP
-    if (verifyAccountHealth) {
-      (health.details['foo'] as String).startsWith("Failed to describe account attributes for 'foo'.")
-    } else {
-      health.details.isEmpty()
-    }
-
-    where:
-    verifyAccountHealth | _
-    true                | _
-    false               | _
+    (health.details['foo'] as String).startsWith("Failed to describe account attributes for 'foo'.")
   }
 
   def "health succeeds when amazon is reachable"() {
@@ -91,12 +68,7 @@ class AmazonHealthIndicatorSpec extends Specification {
       getAmazonEC2(*_) >> mockEc2
     }
 
-    def indicator = new AmazonHealthIndicator(
-      REGISTRY,
-      credentialsRepository,
-      mockAmazonClientProvider,
-      awsConfigurationProperties
-    )
+    def indicator = new AmazonHealthIndicator(REGISTRY, credentialsRepository, mockAmazonClientProvider)
 
     when:
     indicator.checkHealth()
@@ -119,12 +91,7 @@ class AmazonHealthIndicatorSpec extends Specification {
       getAmazonEC2(*_) >> mockEc2
     }
 
-    def indicator = new AmazonHealthIndicator(
-      REGISTRY,
-      credentialsRepository,
-      mockAmazonClientProvider,
-      awsConfigurationProperties
-    )
+    def indicator = new AmazonHealthIndicator(REGISTRY, credentialsRepository, mockAmazonClientProvider)
 
     when:
     indicator.checkHealth()
@@ -144,17 +111,11 @@ class AmazonHealthIndicatorSpec extends Specification {
     def mockEc2 = Stub(AmazonEC2) {
       describeAccountAttributes() >> { throw new AmazonServiceException("fail") }
     }
-
     def mockAmazonClientProvider = Stub(AmazonClientProvider) {
       getAmazonEC2(*_) >> mockEc2
     }
 
-    def indicator = new AmazonHealthIndicator(
-      REGISTRY,
-      credentialsRepository,
-      mockAmazonClientProvider,
-      awsConfigurationProperties
-    )
+    def indicator = new AmazonHealthIndicator(REGISTRY, credentialsRepository, mockAmazonClientProvider)
 
     when:
     indicator.checkHealth()

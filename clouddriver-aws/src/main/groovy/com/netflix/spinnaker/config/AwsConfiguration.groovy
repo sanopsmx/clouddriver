@@ -158,18 +158,11 @@ class AwsConfiguration {
   }
 
   @Bean
-  AwsConfigurationProperties awsConfigurationProperties() {
-    return new AwsConfigurationProperties()
-  }
-
-  @Bean
   AmazonHealthIndicator amazonHealthIndicator(
     Registry registry,
     CredentialsRepository<NetflixAmazonCredentials> credentialsRepository,
-    AmazonClientProvider amazonClientProvider,
-    AwsConfigurationProperties awsConfigurationProperties
-  ) {
-    return new AmazonHealthIndicator(registry, credentialsRepository, amazonClientProvider, awsConfigurationProperties)
+    AmazonClientProvider amazonClientProvider) {
+    return new AmazonHealthIndicator(registry, credentialsRepository, amazonClientProvider)
   }
 
   public static class DeployDefaults {
