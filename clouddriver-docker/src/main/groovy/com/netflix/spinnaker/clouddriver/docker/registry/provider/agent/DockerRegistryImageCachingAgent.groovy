@@ -90,16 +90,21 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
     credentials.repositories.findAll { it ->
       threadCount == 1 || (it.hashCode() % threadCount).abs() == index
     }.collectEntries { repository ->
+      if(repository.equals("spincloud_examples/test1-app")){
+        log.info("***** spincloud_examples/test1-app image tags are being loaded.......................")
+      }
       if(credentials.skip?.contains(repository)) {
           return [:]
       }
       DockerRegistryTags tags = null
       try {
         tags = credentials.client.getTags(repository)
+        if(repository.equals("spincloud_examples/test1-app")){
+          log.info(".......... spincloud_examples/test1-app image tags are loaded. Tag Count: ${tags.tags.size()} is ******")
+        }
       } catch (Exception e) {
         if (e instanceof RetrofitError && e.response?.status == 404) {
           log.warn("Could not load tags for ${repository} in ${credentials.client.address}, reason: ${e.message}")
-          e.printStackTrace()
         } else {
           log.error("Could not load tags for ${repository} in ${credentials.client.address}", e)
         }
@@ -128,7 +133,7 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
   }
 
   private CacheResult buildCacheResult(Map<String, Set<String>> tagMap) {
-    log.info("Describing items in ${agentType}")
+    log.info("Describing items in ${agentType}. And ${tagMap.size()} images are being cached!!!!!!!!!!")
 
     ConcurrentMap<String, DefaultCacheDataBuilder> cachedTags = DefaultCacheDataBuilder.defaultCacheDataBuilderMap()
     ConcurrentMap<String, DefaultCacheDataBuilder> cachedIds = DefaultCacheDataBuilder.defaultCacheDataBuilderMap()
