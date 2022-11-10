@@ -18,5 +18,5 @@ dependencies {
   implementation "io.spinnaker.kork:kork-cloud-config-server"
   implementation "org.apache.commons:commons-lang3"
   implementation "org.springframework.cloud:spring-cloud-context"
-  implementation "org.springframework.cloud:spring-cloud-config-server:2.2.8.RELEASE"
+  implementation "org.springframework.cloud:spring-cloud-config-server"
 }
