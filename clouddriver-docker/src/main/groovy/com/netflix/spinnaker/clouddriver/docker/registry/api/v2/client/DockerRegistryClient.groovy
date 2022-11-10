@@ -170,7 +170,7 @@ class DockerRegistryClient {
     this.registryService = new RestAdapter.Builder()
       .setEndpoint(address)
       .setClient(okClientProvider.provide(address, clientTimeoutMillis, insecureRegistry))
-      .setLogLevel(RestAdapter.LogLevel.FULL)
+      .setLogLevel(RestAdapter.LogLevel.BASIC)
       .build()
       .create(DockerRegistryService)
     this.converter = new GsonConverter(new GsonBuilder().create())
@@ -425,8 +425,10 @@ class DockerRegistryClient {
       path ? registryService.get(path, token, userAgent) :
         registryService.getTags(repository, token, userAgent)
     }, repository)
+    if(repository.equals("spincloud_examples/test1-app")){
+      log.info("Response dump for spincloud_examples/test1-app: \n ${response.dump()}")
+    }
 
-    log.info(response.dump())
     def nextPath = findNextLink(response?.headers)
     def tags = (DockerRegistryTags) converter.fromBody(response.body, DockerRegistryTags)
 
