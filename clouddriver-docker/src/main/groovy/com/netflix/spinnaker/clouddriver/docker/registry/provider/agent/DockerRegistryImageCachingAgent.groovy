@@ -18,6 +18,8 @@ package com.netflix.spinnaker.clouddriver.docker.registry.provider.agent
 
 import com.netflix.spinnaker.cats.agent.*
 import com.netflix.spinnaker.cats.provider.ProviderCache
+import com.netflix.spectator.api.Registry
+import com.netflix.spectator.api.Counter
 import com.netflix.spinnaker.clouddriver.docker.registry.DockerRegistryCloudProvider
 import com.netflix.spinnaker.clouddriver.docker.registry.api.v2.client.DockerRegistryTags
 import com.netflix.spinnaker.clouddriver.docker.registry.cache.DefaultCacheDataBuilder
@@ -47,6 +49,7 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
   private final int threadCount
   private final long interval
   private String registry
+  private Counter loadTagsErrorCounter
 
   DockerRegistryImageCachingAgent(DockerRegistryCloudProvider dockerRegistryCloudProvider,
                                   String accountName,
@@ -54,7 +57,8 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
                                   int index,
                                   int threadCount,
                                   Long intervalSecs,
-                                  String registry) {
+                                  String registry,
+                                  Registry spectatorRegistry) {
     this.dockerRegistryCloudProvider = dockerRegistryCloudProvider
     this.accountName = accountName
     this.credentials = credentials
@@ -62,6 +66,7 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
     this.threadCount = threadCount
     this.interval = TimeUnit.SECONDS.toMillis(intervalSecs)
     this.registry = registry
+    this.loadTagsErrorCounter = spectatorRegistry.counter("load.tags.error")
   }
 
   @Override
@@ -106,6 +111,7 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
         if (e instanceof RetrofitError && e.response?.status == 404) {
           log.warn("Could not load tags for ${repository} in ${credentials.client.address}, reason: ${e.message}")
         } else {
+          this.loadTagsErrorCounter.increment()
           log.error("Could not load tags for ${repository} in ${credentials.client.address}", e)
         }
 
