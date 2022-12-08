@@ -66,7 +66,7 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
     this.threadCount = threadCount
     this.interval = TimeUnit.SECONDS.toMillis(intervalSecs)
     this.registry = registry
-    this.loadTagsErrorCounter = spectatorRegistry.counter("load.tags.error")
+    this.loadTagsErrorCounter = spectatorRegistry.counter("clouddriver.load.tags.error")
   }
 
   @Override
@@ -108,10 +108,11 @@ class DockerRegistryImageCachingAgent implements CachingAgent, AccountAware, Age
           log.info(".......... spincloud_examples/test1-app image tags are loaded. Tag Count: ${tags.tags.size()} is ******")
         }
       } catch (Exception e) {
+        this.loadTagsErrorCounter.increment()
+
         if (e instanceof RetrofitError && e.response?.status == 404) {
           log.warn("Could not load tags for ${repository} in ${credentials.client.address}, reason: ${e.message}")
         } else {
-          this.loadTagsErrorCounter.increment()
           log.error("Could not load tags for ${repository} in ${credentials.client.address}", e)
         }
 
