@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.netflix.spinnaker.clouddriver.artifacts.config.ArtifactCredentials;
+import com.netflix.spinnaker.clouddriver.artifacts.exceptions.FailedDownloadException;
 import com.netflix.spinnaker.clouddriver.core.services.Front50Service;
 import com.netflix.spinnaker.kork.annotations.NonnullByDefault;
 import com.netflix.spinnaker.kork.artifacts.model.Artifact;
@@ -58,6 +59,7 @@ final class Front50ArtifactCredentials implements ArtifactCredentials {
   @Override
   public InputStream download(Artifact artifact) throws IOException {
     String reference = Strings.nullToEmpty(artifact.getReference());
+    log.info("**** downloading artifact - {} .............", reference);
     if (!reference.startsWith(URL_PREFIX)) {
       throw new IllegalArgumentException(
           String.format(
@@ -68,24 +70,34 @@ final class Front50ArtifactCredentials implements ArtifactCredentials {
 
     Map pipelineTemplate;
     String artifactId = reference.substring(URL_PREFIX.length());
-    if (artifactId.contains("@sha256:")) {
-      SplitResult result = splitReferenceOnToken(artifactId, "@sha256:");
-      pipelineTemplate =
-          AuthenticatedRequest.allowAnonymous(
-              () ->
-                  front50Service.getV2PipelineTemplate(
-                      result.pipelineTemplateId, "", result.version));
-    } else if (artifactId.contains(":")) {
-      SplitResult result = splitReferenceOnToken(artifactId, ":");
-      pipelineTemplate =
-          AuthenticatedRequest.allowAnonymous(
-              () ->
-                  front50Service.getV2PipelineTemplate(
-                      result.pipelineTemplateId, result.version, ""));
-    } else {
-      pipelineTemplate =
-          AuthenticatedRequest.allowAnonymous(
-              () -> front50Service.getV2PipelineTemplate(artifactId, "", ""));
+    try {
+      if (artifactId.contains("@sha256:")) {
+        SplitResult result = splitReferenceOnToken(artifactId, "@sha256:");
+        pipelineTemplate =
+            AuthenticatedRequest.allowAnonymous(
+                () ->
+                    front50Service.getV2PipelineTemplate(
+                        result.pipelineTemplateId, "", result.version));
+        log.info("**** fetched v2PipelineTemplate from front50...artifactId : {} ", artifactId);
+      } else if (artifactId.contains(":")) {
+        SplitResult result = splitReferenceOnToken(artifactId, ":");
+        pipelineTemplate =
+            AuthenticatedRequest.allowAnonymous(
+                () ->
+                    front50Service.getV2PipelineTemplate(
+                        result.pipelineTemplateId, result.version, ""));
+      } else {
+        pipelineTemplate =
+            AuthenticatedRequest.allowAnonymous(
+                () -> front50Service.getV2PipelineTemplate(artifactId, "", ""));
+      }
+    } catch (Exception e) {
+      log.error(
+          "***** Exception while downloading v2PipelineTemplate - {} : {}",
+          reference,
+          e.getMessage());
+      e.printStackTrace();
+      throw new FailedDownloadException(e.getMessage(), e);
     }
 
     return new ByteArrayInputStream(objectMapper.writeValueAsBytes(pipelineTemplate));
