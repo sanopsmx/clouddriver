@@ -59,6 +59,9 @@ public class ArtifactController {
   // PUT because we need to send a body, which GET does not allow for spring/retrofit
   @RequestMapping(method = RequestMethod.PUT, value = "/fetch")
   StreamingResponseBody fetch(@RequestBody Artifact artifact) {
+    if (artifact != null && artifact.getType().equals("front50/pipelineTemplate")) {
+      log.info("**** Fetching pipelineTemplate : {}", artifact.getReference());
+    }
     if (artifactDownloader == null) {
       throw new IllegalStateException(
           "Artifacts have not been enabled. Enable them using 'artifacts.enabled' in clouddriver");
