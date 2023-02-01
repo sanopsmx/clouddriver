@@ -106,9 +106,21 @@ public class DescriptionAuthorizerService {
     }
 
     boolean hasPermission = true;
-    if (resourceTypes.contains(ResourceType.ACCOUNT)
-        && account != null
-        && !fiatPermissionEvaluator.hasPermission(auth, account, "ACCOUNT", "WRITE")) {
+    boolean fiatPermission = false;
+    for (int i = 0; i < 5; i++) {
+      fiatPermission = fiatPermissionEvaluator.hasPermission(auth, account, "ACCOUNT", "WRITE");
+      log.info(" ****** fiat permission : {} ", fiatPermission);
+      if (fiatPermission) {
+        break;
+      } else {
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          fiatPermission = false;
+        }
+      }
+    }
+    if (resourceTypes.contains(ResourceType.ACCOUNT) && account != null && !fiatPermission) {
       hasPermission = false;
       errors.reject("authorization.account", format("Access denied to account %s", account));
     }
