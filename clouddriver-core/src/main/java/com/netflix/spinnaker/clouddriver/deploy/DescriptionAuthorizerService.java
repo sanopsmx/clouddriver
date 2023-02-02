@@ -111,12 +111,19 @@ public class DescriptionAuthorizerService {
 
     boolean hasPermission = true;
     boolean fiatPermission = false;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 1; i <= 5; i++) {
       fiatPermission = fiatPermissionEvaluator.hasPermission(auth, account, "ACCOUNT", "WRITE");
-      log.info(" ****** fiat permission : {} ", fiatPermission);
       if (fiatPermission) {
         break;
       } else {
+        log.warn(
+            " ****** fiat permission : {},  account : {} , principal : {}, credentials : {}, user : {}, count : {} ",
+            fiatPermission,
+            account,
+            auth.getPrincipal(),
+            auth.getCredentials(),
+            auth.getName(),
+            i);
         try {
           Thread.sleep(1000);
         } catch (InterruptedException e) {
