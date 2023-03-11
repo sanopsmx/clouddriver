@@ -43,10 +43,8 @@ else
 fi
    
    # To Build Docker image with Given Docker File
-   docker build -t $IMAGENAME .  -f  ${DOCKERFILE_PATH} --no-cache 
+   docker build -t $IMAGENAME -t $RELEASE_IMAGENAME .  -f  ${DOCKERFILE_PATH} --no-cache 
    
-   # Create new Image Tag for Docker.io with the previous Build
-   docker tag $IMAGENAME $RELEASE_IMAGENAME
    # Quay.io login
    docker login -u $quay_user -p $quay_pass quay.io
    
