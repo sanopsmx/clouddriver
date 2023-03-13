@@ -25,22 +25,11 @@ echo "Build id is --------------------- $BUILD_ID"
 # Gradle command  to Produce the Dependant targetfiles for Docker build
 ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test
 
-if [ "${platform}" = 'redhat' ]; then
-
    # Assigning Rhel Image Name according to Quay.io Details
    IMAGENAME="quay.io/opsmxpublic/ubi8-spin-clouddriver:${GITHASH}-${BUILD_NUMBER}"
    
    # Assigning Rhel Image Name according to Docker.io Details
    RELEASE_IMAGENAME="opsmx11/ubi8-spin-clouddriver:${GITHASH}-${BUILD_NUMBER}"
-else
-
-   # Assigning Ubuntu Based Image Name according to Quay.io Details
-   IMAGENAME="quay.io/opsmxpublic/spin-clouddriver:${GITHASH}-${BUILD_NUMBER}"
-    
-   # Assigning Ubuntu Based Image Name according to Docker.io Details
-   RELEASE_IMAGENAME="opsmx11/spin-clouddriver:${GITHASH}-${BUILD_NUMBER}"
-
-fi
    
    # To Build Docker image with Given Docker File
    docker build -t $IMAGENAME -t $RELEASE_IMAGENAME .  -f  ${DOCKERFILE_PATH} --no-cache 
@@ -57,9 +46,5 @@ fi
    # To Push the Docker image into Quay.io
    docker push $RELEASE_IMAGENAME
 
-
 # Quay Image Name as Artifact
 echo \"Quay_IMAGE_NAME\": \"${IMAGENAME}\" > file.properties;
-
-# Docker Image Name as Artifact
-echo \"Docker_IMAGE_NAME\": \"${RELEASE_IMAGENAME}\" >> file.properties;
