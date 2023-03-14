@@ -20,10 +20,6 @@ RUN yum -y install jq bash unzip wget unzip procps java-11-openjdk java-11-openj
 RUN yum -y update
 
 
-ENV BINARY=yq_linux_amd64
-ENV LATEST=$(wget -qO- https://api.github.com/repos/mikefarah/yq/releases/latest 2>/dev/null | grep browser_download_url | grep $BINARY\"\$|awk '{print $NF}' )
-RUN  wget -q $LATEST -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
-
 RUN wget https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
   chmod +x kubectl && \
   mv ./kubectl /usr/local/bin/kubectl
