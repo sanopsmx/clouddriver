@@ -11,13 +11,18 @@ COPY clouddriver-web/build/install/clouddriver /opt/clouddriver
 
 ENV KUBECTL_VERSION v1.22.0
 
-RUN yum -y install jq yq bash unzip wget unzip procps java-11-openjdk java-11-openjdk-devel.x86_64 python2 vim  net-tools curl git && \
+RUN yum -y install jq bash unzip wget unzip procps java-11-openjdk java-11-openjdk-devel.x86_64 python2 vim  net-tools curl git && \
   wget -nv https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.zip && \
   unzip -qq google-cloud-sdk.zip -d /opt && \
   rm google-cloud-sdk.zip && \
   CLOUDSDK_PYTHON="python2.7" /opt/google-cloud-sdk/install.sh --usage-reporting=false --bash-completion=false --additional-components app-engine-java app-engine-go && \
   rm -rf ~/.config/gcloud
 RUN yum -y update
+
+
+ENV BINARY=yq_linux_amd64
+ENV LATEST=$(wget -qO- https://api.github.com/repos/mikefarah/yq/releases/latest 2>/dev/null | grep browser_download_url | grep $BINARY\"\$|awk '{print $NF}' )
+RUN  wget -q $LATEST -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
 RUN wget https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
   chmod +x kubectl && \
