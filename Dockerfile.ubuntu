@@ -27,4 +27,4 @@ RUN adduser --system --uid 10111 --group spinnaker
 COPY clouddriver-web/build/install/clouddriver /opt/clouddriver
 RUN mkdir -p /opt/clouddriver/plugins && chown -R spinnaker:nogroup /opt/clouddriver/plugins
 USER spinnaker
-CMD  sleep 60s ; "/opt/clouddriver/bin/clouddriver"
+CMD ["/opt/clouddriver/bin/clouddriver"]
