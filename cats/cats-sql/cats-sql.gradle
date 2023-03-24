@@ -47,7 +47,7 @@ dependencies {
 
   testImplementation project(":cats:cats-test")
 
-  testImplementation "cglib:cglib-nodep"
+  testImplementation "cglib:cglib-nodep:3.3.0"
   testImplementation "io.spinnaker.kork:kork-sql-test"
   testImplementation "com.nhaarman:mockito-kotlin"
   testImplementation "junit:junit"
