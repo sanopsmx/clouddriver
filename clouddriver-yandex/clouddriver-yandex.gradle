@@ -1,9 +1,9 @@
 plugins {
-  id("net.ltgt.errorprone") version "1.2.1"
+  id("net.ltgt.errorprone") version "3.0.1"
 }
 
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.4.0")
+  errorprone("com.google.errorprone:error_prone_core:2.18.0")
   implementation project(":cats:cats-core")
   implementation project(":clouddriver-api")
   implementation project(":clouddriver-core")

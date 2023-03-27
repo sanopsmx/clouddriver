@@ -33,7 +33,7 @@ dependencies {
   implementation "io.spinnaker.fiat:fiat-core:$fiatVersion"
   implementation "io.spinnaker.kork:kork-core"
   implementation "io.spinnaker.kork:kork-sql"
-  implementation "de.huxhorn.sulky:de.huxhorn.sulky.ulid"
+  implementation "de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0"
   implementation "io.github.resilience4j:resilience4j-retry"
   implementation "io.strikt:strikt-core"
   implementation "io.vavr:vavr:0.10.0"
