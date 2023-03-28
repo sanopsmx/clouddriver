@@ -61,6 +61,7 @@ subprojects {
 
     dependencies {
       implementation enforcedPlatform("io.spinnaker.kork:kork-bom:$korkVersion")
+      implementation "org.jetbrains:annotations:24.0.1"
 
       annotationProcessor platform("io.spinnaker.kork:kork-bom:$korkVersion")
       annotationProcessor "org.projectlombok:lombok"
@@ -123,4 +124,8 @@ bootJar {
 
 jar {
   enabled = true
+}
+
+configurations.all {
+  exclude group: 'org.jetbrains', module: 'annotations'
 }
