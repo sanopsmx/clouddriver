@@ -125,3 +125,7 @@ bootJar {
 jar {
   enabled = true
 }
+
+configurations.all {
+  exclude group: 'org.jetbrains', module: 'annotations'
+}
