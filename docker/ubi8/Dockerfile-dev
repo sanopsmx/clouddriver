@@ -56,29 +56,6 @@ USER root
 RUN yum -y install  wget git
 
 
-#custom plugin zip files adding
-#ARG CUSTOMPLUGIN_RELEASEVERSION
-#ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
-
-ARG CUSTOMPLUGIN_RELEASEORG
-ENV CUSTOMPLUGIN_RELEASEORG=$CUSTOMPLUGIN_RELEASEORG
-
-ARG CUSTOMPLUGIN_RELEASEREPO
-ENV CUSTOMPLUGIN_RELEASEREPO=$CUSTOMPLUGIN_RELEASEREPO
-
-ARG CUSTOMPLUGIN_RELEASEVERSION
-ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
-
-
-
-
-#RUN wget -O Armory.ObservabilityPlugin-armory-observability-plugin-v1.4.2-SNAPSHOT.zip -c https://github.com/OpsMx/armory-observability-plugin/releases/download/v1.0.0/armory-observability-plugin-v1.4.2-SNAPSHOT.zip -P /opt/clouddriver/plugins
-#RUN mv Armory.ObservabilityPlugin-armory-observability-plugin-v1.4.2-SNAPSHOT.zip /opt/clouddriver/plugins/
-
-RUN wget -O Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip -c https://github.com/${CUSTOMPLUGIN_RELEASEORG}/${CUSTOMPLUGIN_RELEASEREPO}/releases/download/${CUSTOMPLUGIN_RELEASEVERSION}/armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}.zip -P /opt/clouddriver/plugins
-RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip /opt/clouddriver/plugins/
-
-
 # AWS CLI
 RUN yum -y install python3-pip && \
     pip3 install --upgrade pyyaml==5.4 s3cmd==${AWS_CLI_S3_CMD} python-magic \
