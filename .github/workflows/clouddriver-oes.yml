@@ -6,38 +6,6 @@ on:
     branches:
     - OES-1.30.1
 
-    inputs:
-      org:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Oragnisation'
-        # Default value if no value is explicitly provided
-        default: 'OpsMx'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
-
-      repo:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Repositry'
-        # Default value if no value is explicitly provided
-        default: 'armory-observability-plugin'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
-
-      tag:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Tag'
-        # Default value if no value is explicitly provided
-        default: 'v1.0.1'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
-
- 
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
   CONTAINER_REGISTRY: quay.io/opsmxpublic
@@ -107,9 +75,9 @@ jobs:
           context: .
           build-args: |
             TARGETARCH=amd64
-            CUSTOMPLUGIN_RELEASEORG=${{ inputs.org }}
-            CUSTOMPLUGIN_RELEASEREPO=${{ inputs.repo }}
-            CUSTOMPLUGIN_RELEASEVERSION=${{ inputs.tag }}
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -120,9 +88,9 @@ jobs:
           context: .
           build-args: |
             TARGETARCH=amd64
-            CUSTOMPLUGIN_RELEASEORG=${{ inputs.org }}
-            CUSTOMPLUGIN_RELEASEREPO=${{ inputs.repo }}
-            CUSTOMPLUGIN_RELEASEVERSION=${{ inputs.tag }}
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |

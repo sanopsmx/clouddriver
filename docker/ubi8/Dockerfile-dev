@@ -49,9 +49,35 @@ ENV ECR_TOKEN_VERSION=v1.0.2
 ENV PATH "$PATH:/usr/local/bin/:/opt/google-cloud-sdk/bin/:/usr/local/bin/aws-iam-authenticator"
 
 USER root
+
+
 #RUN yum -y install bash jq  tar unzip wget procps  java-17-openjdk-devel.x86_64 vim  net-tools curl git 
 
 RUN yum -y install  wget git
+
+
+#custom plugin zip files adding
+#ARG CUSTOMPLUGIN_RELEASEVERSION
+#ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
+
+ARG CUSTOMPLUGIN_RELEASEORG
+ENV CUSTOMPLUGIN_RELEASEORG=$CUSTOMPLUGIN_RELEASEORG
+
+ARG CUSTOMPLUGIN_RELEASEREPO
+ENV CUSTOMPLUGIN_RELEASEREPO=$CUSTOMPLUGIN_RELEASEREPO
+
+ARG CUSTOMPLUGIN_RELEASEVERSION
+ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
+
+
+
+
+#RUN wget -O Armory.ObservabilityPlugin-armory-observability-plugin-v1.4.2-SNAPSHOT.zip -c https://github.com/OpsMx/armory-observability-plugin/releases/download/v1.0.0/armory-observability-plugin-v1.4.2-SNAPSHOT.zip -P /opt/clouddriver/plugins
+#RUN mv Armory.ObservabilityPlugin-armory-observability-plugin-v1.4.2-SNAPSHOT.zip /opt/clouddriver/plugins/
+
+RUN wget -O Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip -c https://github.com/${CUSTOMPLUGIN_RELEASEORG}/${CUSTOMPLUGIN_RELEASEREPO}/releases/download/${CUSTOMPLUGIN_RELEASEVERSION}/armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}.zip -P /opt/clouddriver/plugins
+RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip /opt/clouddriver/plugins/
+
 
 # AWS CLI
 RUN yum -y install python3-pip && \
@@ -78,7 +104,7 @@ RUN wget https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_RE
 	&& mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator\
     && ln -sf /usr/local/bin/aws-iam-authenticator /usr/local/bin/heptio-authenticator-aws
 
-COPY clouddriver-web/build/install/clouddriver /opt/clouddriver
+#COPY clouddriver-web/build/install/clouddriver /opt/clouddriver
 RUN mkdir -p /opt/jaeger
 COPY jaeger/opentelemetry-javaagent.jar /opt/jaeger/opentelemetry-javaagent.jar
 
@@ -104,15 +130,9 @@ ENV CUSTOMPLUGIN_RELEASEREPO=$CUSTOMPLUGIN_RELEASEREPO
 ARG CUSTOMPLUGIN_RELEASEVERSION
 ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
 
-
-
-
-#RUN wget -O Armory.ObservabilityPlugin-armory-observability-plugin-v1.4.2-SNAPSHOT.zip -c https://github.com/OpsMx/armory-observability-plugin/releases/download/v1.0.0/armory-observability-plugin-v1.4.2-SNAPSHOT.zip -P /opt/clouddriver/plugins 
-#RUN mv Armory.ObservabilityPlugin-armory-observability-plugin-v1.4.2-SNAPSHOT.zip /opt/clouddriver/plugins/
-
 RUN wget -O Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip -c https://github.com/${CUSTOMPLUGIN_RELEASEORG}/${CUSTOMPLUGIN_RELEASEREPO}/releases/download/${CUSTOMPLUGIN_RELEASEVERSION}/armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}.zip -P /opt/clouddriver/plugins 
-RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip /opt/clouddriver/plugins/
 
+RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip /opt/clouddriver/plugins/
 
 RUN chmod -R 777 /opt/clouddriver/plugins/
 RUN chown -R spinnaker:spinnaker /opt/
@@ -125,4 +145,3 @@ USER spinnaker
 ENV SLEEP_TIME=10s
 CMD  sleep $SLEEP_TIME ; "/opt/clouddriver/bin/clouddriver"
 #CMD  sleep 180s ; "/opt/clouddriver/bin/clouddriver"
-
