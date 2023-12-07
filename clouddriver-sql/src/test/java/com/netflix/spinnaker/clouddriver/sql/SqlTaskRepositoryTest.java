@@ -22,8 +22,10 @@ import com.netflix.spinnaker.config.ConnectionPools;
 import com.netflix.spinnaker.kork.sql.config.RetryProperties;
 import com.netflix.spinnaker.kork.sql.config.SqlRetryProperties;
 import com.netflix.spinnaker.kork.sql.test.SqlTestUtil;
+import org.junit.jupiter.api.AfterEach;
+
 import java.time.Clock;
-import org.junit.After;
+
 
 public class SqlTaskRepositoryTest extends TaskRepositoryTck {
 
@@ -46,7 +48,7 @@ public class SqlTaskRepositoryTest extends TaskRepositoryTck {
         ConnectionPools.TASKS.getValue());
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     if (database != null) {
       SqlTestUtil.cleanupDb(database.context);
