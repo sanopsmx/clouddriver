@@ -65,7 +65,7 @@ subprojects {
       implementation ("commons-fileupload:commons-fileupload:1.5")
       implementation("io.netty:netty-codec-http:4.1.91.Final")
       implementation("org.apache.ivy:ivy:2.5.2")
-      implementation("org.json:json:20230227")
+      implementation("org.json:json")
       implementation("org.yaml:snakeyaml:2.0")
 
       annotationProcessor platform("io.spinnaker.kork:kork-bom:$korkVersion")
