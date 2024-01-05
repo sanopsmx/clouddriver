@@ -45,7 +45,10 @@ dependencies {
     // kotlin.
     transitive = false
   }
-  implementation "com.oracle.oci.sdk:oci-java-sdk-core"
+  implementation ('com.oracle.oci.sdk:oci-java-sdk-core') {
+    exclude group: "com.nimbusds", module: "nimbus-jose-jwt:9.22"
+  }
+  implementation "com.nimbusds:nimbus-jose-jwt:9.37.3"
   implementation "com.squareup.okhttp:okhttp:2.7.5"
   implementation "com.sun.jersey:jersey-client:1.9.1"
   implementation "org.apache.commons:commons-lang3"

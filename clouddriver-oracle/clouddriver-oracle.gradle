@@ -14,7 +14,10 @@ dependencies {
   implementation "io.spinnaker.fiat:fiat-api:$fiatVersion"
   implementation "io.spinnaker.fiat:fiat-core:$fiatVersion"
   implementation "io.spinnaker.kork:kork-moniker"
-  implementation "com.oracle.oci.sdk:oci-java-sdk-core"
+  implementation ('com.oracle.oci.sdk:oci-java-sdk-core') {
+    exclude group: "com.nimbusds", module: "nimbus-jose-jwt:9.22"
+  }
+  implementation "com.nimbusds:nimbus-jose-jwt:9.37.3"
   implementation "com.oracle.oci.sdk:oci-java-sdk-identity"
   implementation "com.oracle.oci.sdk:oci-java-sdk-loadbalancer"
   implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
