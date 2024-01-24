@@ -5,7 +5,7 @@ RUN ./gradlew --no-daemon clouddriver-web:installDist -x test
 # Modify DEFAULT_JVM_OPTS in clouddriver/bin/clouddriver
 ENV EXTRA_OPTS="-Djava.security.egd=file:/dev/./urandom -Dspring.config.import=optional:/opt/spinnaker/config/ --add-opens=java.base/sun.net=ALL-UNNAMED --add-exports=java.base/sun.net=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-exports=java.base/sun.security.rsa=ALL-UNNAMED --add-exports=java.base/sun.security.pkcs=ALL-UNNAMED --add-exports=java.base/sun.security.x509=ALL-UNNAMED"
 
-RUN sed -i "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$EXTRA_OPTS'/" /opt/clouddriver/bin/clouddriver
+RUN sed -i "s#^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$#\1='-Djava.security.egd=file:/dev/./urandom -Dspring.config.import=optional:/opt/spinnaker/config/ --add-opens=java.base/sun.net=ALL-UNNAMED --add-exports=java.base/sun.net=ALL-UNNAMED --add-opens=java.base/java.time=ALL-UNNAMED --add-exports=java.base/sun.security.rsa=ALL-UNNAMED --add-exports=java.base/sun.security.pkcs=ALL-UNNAMED --add-exports=java.base/sun.security.x509=ALL-UNNAMED'#" /opt/clouddriver/bin/clouddriver
 
 
 FROM registry.access.redhat.com/ubi8/ubi:8.8 as java-builder
