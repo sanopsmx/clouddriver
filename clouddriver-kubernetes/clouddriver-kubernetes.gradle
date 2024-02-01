@@ -66,7 +66,7 @@ dependencies {
   implementation "org.apache.groovy:groovy-all:4.0.11"
   implementation "com.google.code.findbugs:jsr305"
   implementation "com.google.guava:guava"
-  implementation 'com.jayway.jsonpath:json-path:2.3.0'
+  implementation 'com.jayway.jsonpath:json-path'
   implementation "com.github.ben-manes.caffeine:guava"
   implementation "com.github.wnameless.json:json-flattener:0.11.1"
   implementation "com.netflix.frigga:frigga:0.26.0"
