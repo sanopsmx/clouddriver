@@ -107,7 +107,7 @@ RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHO
 
 RUN chmod -R 777 /opt/clouddriver/plugins/
 RUN chown -R spinnaker:spinnaker /opt/
-
+RUN yum -y remove tar vim vi
 RUN chown -R spinnaker:spinnaker /opt/
 RUN mkdir -p /etc/pki/tls/certs
 RUN chmod -R 777 /etc/pki/tls/certs
@@ -117,4 +117,3 @@ USER spinnaker
 ENV SLEEP_TIME=10s
 CMD  sleep $SLEEP_TIME ; "/opt/clouddriver/bin/clouddriver"
 #CMD  sleep 180s ; "/opt/clouddriver/bin/clouddriver"
-
