@@ -972,6 +972,7 @@ class GCEUtil {
   }
 
   public static String deriveProjectId(String fullUrl) {
+    log.info("fullurl : $fullUrl.")
     if (!fullUrl) {
       throw new IllegalArgumentException("Attempting to derive project id from empty resource url.")
     }
